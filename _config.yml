@@ -7,16 +7,15 @@ kramdown:
 
 # 作者信息
 author: 
-  name: 闫肃
-  email: suyan0830@gmail.com
-  link: http://yansu.org
-  weibo: http://weibo.com/yansu0711
-  github: http://github.com/suyan
+  name: 徐超 
+  email: belikov_dr@163.com
+  link: http://deeper-think.github.io
+  github: http://github.com/deeper-think
 
 # 站点信息
-title: 闫肃的博客 
-description: 闫肃的博客
-url: http://yansu.org
+title: 徐超的博客 
+description: 徐超的博客
+url: http://deeper-think.github.io
 rss_url: /pages/atom.xml
 
 # gavatar头像及Favicon
@@ -26,18 +25,18 @@ favicon: http://7u2ho6.com1.z0.glb.clouddn.com/favicon.ico
 # google analytics 设置
 ga:
   id: UA-54767140-1
-  url: yansu.org
+  url: deeper-think.github.io
 
 # disqus 设置
 disqus:
-  shortname: suyan-zh
+  shortname: xuchao-zh
 
 # 主题设置，自动激活某个标签
 active: 技术
 
 # 首页除了最新文章外显示分类
 cates: 
-  - Python
+  - KVM
   - OpenStack
 
 # 中文本地化
