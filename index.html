@@ -5,6 +5,9 @@ title: 首页
 
 <br>
 <div class="row">
+
+
+
   <div class="col-md-12">
     <div class="panel panel-primary">
       <div class="panel-heading">{{ site.locals.newest }}</div>
@@ -16,10 +19,15 @@ title: 首页
       {% endfor %}
     </div>
   </div>
+
+
+
   {% for cate in site.cates %}
+
     <div class="col-md-12">
       <div class="panel panel-primary">
-        <div class="panel-heading">{{ cate }}</div>
+        
+        <div class="panel-heading">{{ cate }}</div>  
         {% for tag in site.tags %} 
           {% if tag[0] == cate %}
             {% for post in tag[1] %}
@@ -30,8 +38,14 @@ title: 首页
             {% endfor %}
           {% endif %}
         {% endfor %}
+      
       </div>
     </div>
+
   {% endfor %}
+
+
+
+
 </div>
  
