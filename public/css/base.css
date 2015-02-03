@@ -16,6 +16,7 @@ body, html {
   padding-left: 0px;
   padding-right: 0px;
   text-align: center;
+  font-family: "楷体","楷体_GB2312";
 }
 .aside1 > .nav > li > a {
   padding-left: 0px;
@@ -37,6 +38,7 @@ body, html {
   height: 100%;
   border-right: 2px solid #18bc9c;
   overflow-y: auto;
+  font-family: "楷体","楷体_GB2312";
 }
 /* 右侧内容栏 */
 .aside3 {
