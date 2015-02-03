@@ -51,10 +51,10 @@ body, html {
   text-align: center;
   color: #FFF;
 }
-.aside3-content {padding-left: 30px;padding-right: 30px;}
+.aside3-content {padding-left: 30px;padding-right: 30px; font-family: "楷体","楷体_GB2312";}
 /* 文章内容排版 */
 a:hover {text-decoration:none;}
-#content {font-size: 18px; line-height: 1.5;}
+#content {font-size: 18px; line-height: 1.5; font-family: "楷体","楷体_GB2312";}
 #content p {margin: 20px 0px;}
 #content ul, ol, dl, li {margin: 10px 0px;}
 .nav > li {margin: 0px;}
