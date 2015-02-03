@@ -1,13 +1,13 @@
 ---
 layout: post
-title: 从运行原理及使用场景看Apache和Nginx
+title: 从运行原理及使用场景看Apache和Nginx【转】
 category: 技术
 tags: [Apache,Nginx]
 keywords: Apache,Nginx,原理,运行,场景
 description: 
 ---
 
-> 用正确的工具，做正确的事情。
+> 用正确的工具，做正确的事情。-- [转自](http://yansu.org/2014/02/15/apache-and-nginx.html)
 
 __本文只作为了解Apache和Nginx知识的一个梳理，想详细了解的请阅读文末参考链接中的博文。__
 
