@@ -23,7 +23,7 @@ description:
         pid_t                childpid;
         socklen_t            clilen;
         struct sockaddr_in    cliaddr, servaddr;
-    
+		 
         listenfd = socket(AF_INET, SOCK_STREAM, 0);
     
         bzero(&servaddr, sizeof(servaddr));
@@ -185,9 +185,10 @@ description:
 
 
 结论：
+
 > 存在于tcp连接缓冲区里面的TCP连接：服务器端正常接收客户端的数据，并发送ACK确认。奇怪了，此时的tcp连接在服务器端仍然绑定在监听端口，也就是说多个连接共用同一个端口，服务器端如何区分数据属于哪一个TCP连接的？TCP连接是四元组，服务器端绑定在同一个端口的TCP连接是通过(源IP、源端口号)来区分数据。不存在于tcp连接缓冲区里面的TCP连接：在服务器端看来已经感知不到的TCP连接，服务器端直接发送RST给客户端TCP。
 
-## 客户端向没有被accept的TCP连接里面写数据后，服务器端acceptTCP连接，然后读socket，是否可以读取到正确的数据呢？
+## 客户端向没有被accept的TCP连接里面写数据后，服务器端accept TCP连接然后读socket，是否可以读取到正确的数据呢？
 
 为了得到上面问题的答案，修改了客户端代码，先和服务器端建立100个TCP连接，然后依次向每个TCP连接里面写入对应的编号，代码如下：
 
