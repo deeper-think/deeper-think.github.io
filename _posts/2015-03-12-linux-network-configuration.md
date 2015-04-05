@@ -7,7 +7,7 @@ keywords: network, linux
 description: 
 ---
 
-> 我思故我在 -- 笛卡尔
+> 用正确的工具，做正确的事情
 
 ### ifcfg常用配置项
     DEVICE=eth0
@@ -32,5 +32,30 @@ description:
     set shiftwidth=4 //When auto-indenting, indent by this much.【1】
     set softtabstop=4 //Make Vim treat <Tab> key as 4 spaces, but respect hard Tabs.
     set ignorecase //忽略大小写
+
+
+### fstab文件、fdisk命令与e2label命令
+
+fstab文件用于配置开机挂在的文件系统，fstab配置文件的格式：
+	
+	tmpfs                   /dev/shm                tmpfs   defaults        0 0
+	devpts                  /dev/pts                devpts  gid=5,mode=620  0 0
+	sysfs                   /sys                    sysfs   defaults        0 0
+	proc                    /proc                   proc    defaults        0 0
+	LABEL=/cache1           /cache1                 ext3    defaults        1 0
+
+从左到右每一列的数据项的含义是：
+分区名或者卷标：要挂载的文件系统的分区名(实体文件系统需要指定完整的分区路径)或卷标。
+挂载点：文件系统的挂载点，系统上的一个目录。
+文件系统类型：ext3、ext4等。
+挂载类型：default或rw等。
+是否备份：0表示否，1表示是。
+是否开机检测：0表示否，1表示是。
+
+fdisk命令用于物理磁盘探测，磁盘分区管理等。
+
+e2label命令用于查看分区卷标或者设置分区卷标，我们可以通过分区的设备文件路径或者分区卷标来指定一个分区。
+
+
 
 enjoy the life !!!
