@@ -1,13 +1,13 @@
 ---
 layout: post
-title: netmap安装及收发包测试
+title: netmap 安装及收发包测试
 category: 技术
 tags: [netmap]
 keywords: netmap
 description: 
 ---
 
-> 我思故我在 -- 笛卡尔
+> 用正确的工具，做正确的事情
 
 netmap是一款高性能网络IO架构，主要通过两点实现快速的收发包：
 
