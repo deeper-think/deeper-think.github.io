@@ -1,6 +1,6 @@
 ---
 layout: post
-title:多路径TCP（译）
+title: 多路径TCP（译）
 category: 技术
 tags: [Multipath, TCP]
 keywords: Multipath,TCP
