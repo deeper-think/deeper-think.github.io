@@ -1,6 +1,6 @@
 ---
 layout: post
-title: multi-patch TCP（译）
+title: Multipath TCP（译）
 category: 技术
 tags: [Multipath, TCP]
 keywords: Multipath,TCP
