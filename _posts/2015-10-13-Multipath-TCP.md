@@ -36,6 +36,8 @@ MPTCP的设计初衷即为解决上述的问题，更确切的将MPTCP的设计�
 
 ## 2 基本原理及架构
 
+### 2.1 MPTCP 基本原理及架构
+
 在MPTCP环境下一个TCP连接包括多条数据流也即“子流”，应用程序间任然通过调用传统的socket API接口进行TCP数据的传输，MPTCP负责对“子流”进行管理，每条子流真正负责实现对TCP数据的传输。从整体架构的角度考虑，MPTCP作为中间层处于socket API与一条或多条TCP 子流之间，如图1所示。MPTCP环境中连接的两端主机需要交换额外的信息，目前通过利用TCP协议头部的option字段来实现额外信息的交互以达到如下目标：
 
 - 建立一个新的MPTCP连接；
@@ -46,5 +48,32 @@ MPTCP的设计初衷即为解决上述的问题，更确切的将MPTCP的设计�
 
 ![MPTCP整体架构图](http://7u2rbh.com1.z0.glb.clouddn.com/paasch1.png)
 
- 
+### 2.2 MPTCP连接建立
 
+传统TCP类型，MPTCP连接建立通过三次握手来完成，同时握手数据包option字段携带额外的信息用于指明是否使用MPTCP，MPTCP连接建立过程如图2所示。
+
+![MPTCP连接建立过程](http://7u2rbh.com1.z0.glb.clouddn.com/paasch2.png)
+
+### 2.3 MPTCP创建并添加新的子TCP流
+
+图2展示了一个MPTCP连接上建立第一个子TCP流的过程。在该MPTCP连接上使用其他的网络接口创建并添加 子TCP流的过程如图3所示，为了将每个子TCP流关联到相关的MTCP连接，每个MPTCP连接在两端主机上都需要有唯一的标示，传统TCP连接使用四元组来唯一标示一个TCP连接（源IP地址、源端口号、目的IP地址、目的端口号），然而互联网上广泛存在的NAT设备导致在MPTCP场景下TCP四元组并不能作为连接的唯一标示，
+
+MPTCP连接两端的HOST需要对新创建添加的子TCP流有唯一的标示，传统TCP连接使用四元组来唯一标示一个TCP连接然而因为互联网上NAT设备的存在，在MPTCP的场景 传统TCP四元组并不能在连接的两端唯一标示一个子TCP流，MPTCP为每一个连接分配一个本地唯一的Token，当一个MPTCP连接创建新的子TCP流时，三次握手SYN数据包携带MP_JOIN 选型，该选项携带其所关联的MPTCP Token信息，如图3所示。
+
+![MPTCP连接创建新的子流](http://7u2rbh.com1.z0.glb.clouddn.com/paasch3.png)
+
+聪明的读者应该已经注意到 MPTCP连接建立SYN包MP\_CAPABLE选型并没有携带Token， 但是子TCP流建立时仍然需要携带其关联MPTCP连接的Token，这主要是为了避免MP_CAPABLE占满所有的TCP Option的字节空间，Token本身是根据MP\_CAPABLE选项Key值的Hash得到的。
+
+### 2.4 MPTCP拥塞控制
+
+从拥塞控制的角度考虑使用MPTCP会导致一些有趣的问题，一个MPTCP连接使用多个子TCP流进行数据的传输，每个子TCP流对应一条单独的传输路径，同一个时刻每条传输路径的拥塞状态各不相同，一个解决方案是针对每一条单独的子TCP流使用传统TCP协议的拥塞控制方案，这种解决方案容易实现但是会产生不公平的问题，MPTCP连接与传统的TCP连接相比将占用更多的传输路径上的交换资源，如图4所示。
+
+![MPTCP使用多条流进行传输](http://7u2rbh.com1.z0.glb.clouddn.com/paasch4.png)
+
+
+未完，待续！！！
+
+
+## 参考：　
+
+1. [Multipath TCP-译自](http://queue.acm.org/detail.cfm?id=2591369)
