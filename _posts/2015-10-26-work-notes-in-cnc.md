@@ -9,10 +9,7 @@ description:
 
 > 用正确的工具，做正确的事情
 
-
-## 1 2015年10月26日
-
-### 1.1 tcpdump 抓TCP三次握手相关数据包
+### 1 tcpdump 抓TCP三次握手相关数据包
 
 	// 捕获syn数据包
 	tcpdump -i <interface> "tcp[tcpflags] & (tcp-syn) != 0" 
@@ -26,9 +23,17 @@ description:
 	// 捕获TCP SYN或ACK包
 	tcpdump -r <interface> "tcp[tcpflags] & (tcp-syn|tcp-ack) != 0"
 
-### 1.2 路由跟踪及链路状态监测
+### 2 路由跟踪及链路状态监测
 
 	mtr hostname or IP
+
+### 3 常用脚本参数
+	
+#### 3.1 echo 输出不换行
+	
+	echo -n "hello world!!"
+
+### 4 关于开机自启动
 
 
 
