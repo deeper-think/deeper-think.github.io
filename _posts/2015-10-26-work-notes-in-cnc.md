@@ -29,12 +29,19 @@ description:
 
 ### 3 常用脚本参数
 	
-#### 3.1 echo 输出不换行
+echo 输出不换行：
 	
 	echo -n "hello world!!"
 
-### 4 关于开机自启动
+set 命令用法：
 
+	[root@bogon xuc]# set $(/sbin/runlevel)
+	[root@bogon xuc]# runlevel=$2
+	[root@bogon xuc]# previous=$1
+	[root@bogon xuc]# echo $runlevel $previous
+	5 N
+	[root@bogon xuc]# echo $(/sbin/runlevel)
+	N 5
 
 
 	
