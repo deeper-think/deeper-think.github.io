@@ -23,6 +23,9 @@ description:
 	// 捕获TCP SYN或ACK包
 	tcpdump -r <interface> "tcp[tcpflags] & (tcp-syn|tcp-ack) != 0"
 
+	// 捕获RST包
+	tcpdump -r <interface> "tcp[tcpflags] & (tcp-rst) != 0"
+
 ### 2 路由跟踪及链路状态监测
 
 	mtr hostname or IP
@@ -87,6 +90,12 @@ chkconfig 命令可以查看、修改、配置开机自启动服务：
 	\#
 
 	id:5:initdefault:
+
+
+### 4 linux history 命令显示时间
+
+	HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "
+	
 
 
 Have a fun！！！
