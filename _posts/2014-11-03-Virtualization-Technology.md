@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 硬件虚拟化技术浅析（转）
-category: 技术
+category: KVM
 tags: [kvm, qemu, 虚拟化]
 keywords: kvm, qemu, 虚拟化
 description: 
