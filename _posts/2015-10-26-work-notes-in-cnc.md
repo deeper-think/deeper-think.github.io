@@ -116,6 +116,10 @@ grub2文件（软连接，实际上连接到/boot/grub2/grub.cfg）：
 
 	grub2-mkconfig -o /boot/grub2/grub.cfg
 
+### 7 tar压缩文件命令
 
+	tar -zcvf test.tar.gz ./test
+
+压缩本地目录下的test文件，并生成压缩文件test.tar.gz。
 
 Have a fun！！！
