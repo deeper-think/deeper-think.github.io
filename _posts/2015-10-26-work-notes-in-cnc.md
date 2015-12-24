@@ -97,5 +97,25 @@ chkconfig 命令可以查看、修改、配置开机自启动服务：
 	HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "
 	
 
+### 5 yum epel源地址
+
+	http://dl.fedoraproject.org/pub/epel/beta/7/x86_64/epel-release-7-0.2.noarch.rpm
+
+
+### 6 centos7 相关配置文件及命令
+
+grub配置文件（静态配置文件，用于生成启动grub2文件）：
+
+	/etc/default/grub
+
+grub2文件（软连接，实际上连接到/boot/grub2/grub.cfg）：
+
+	/etc/grub2.cfg
+
+重新生成grub2文件：
+
+	grub2-mkconfig -o /boot/grub2/grub.cfg
+
+
 
 Have a fun！！！
