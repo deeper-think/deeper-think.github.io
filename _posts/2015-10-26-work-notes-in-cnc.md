@@ -122,4 +122,10 @@ grub2文件（软连接，实际上连接到/boot/grub2/grub.cfg）：
 
 压缩本地目录下的test文件，并生成压缩文件test.tar.gz。
 
+
+### 8 centos发行版rpm包源码包
+
+	http://vault.centos.org/6.6/updates/Source/SPackages/
+
+
 Have a fun！！！

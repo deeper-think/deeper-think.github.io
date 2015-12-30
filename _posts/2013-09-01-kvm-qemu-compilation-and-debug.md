@@ -111,6 +111,21 @@ kvm虚拟机创建及启动后，在hypervisor上以qemu进程的形式存在，
 
 ## kvm模块
 
+### kvm源码下载
+
+kvm是一个内核模块，并且被合并入linux kernel 2.6.20以后的内核版本，因此kvm源代码的获取有两种方式：通过下载内核源码来获取kvm源代码或者下载当前kvm项目最新开发版本的代码。
+
+最新的kernel源码可以kernel项目主页上下载到：
+
+	https://www.kernel.org/
+
+单独下载当前kvm 开发版本的代码：
+
+	https://git.kernel.org/cgit/virt/kvm/kvm.git/
+
+
+### kvm源码编译
+
 
 
 
