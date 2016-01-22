@@ -128,4 +128,6 @@ grub2文件（软连接，实际上连接到/boot/grub2/grub.cfg）：
 	http://vault.centos.org/6.6/updates/Source/SPackages/
 
 
+
+
 Have a fun！！！

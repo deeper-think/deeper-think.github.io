@@ -123,10 +123,88 @@ kvm是一个内核模块，并且被合并入linux kernel 2.6.20以后的内核�
 
 	https://git.kernel.org/cgit/virt/kvm/kvm.git/
 
+如果编译使用最新版本的kvm模块，需要升级内核到对应的最新版本，如果不想编译并升级整个内核，可以下载当前使用linux OS 发行版自带内核的源码包，然后单独编译kvm 模块并动态插入到当前运行的内核中即可。
 
-### kvm源码编译
+对于centos 发行版其源码包的下载链接：
+
+	http://vault.centos.org/6.6/updates/Source/SPackages/
+
+### kvm源码编译及安装
+
+这里选择下载当前运行OS自带内核对应的源码包，并单独编译kvm模块的方式。
+
+首先是要先获取当前运行内核对应的源码，查看当前OS内核版本，并到centos官网下载对应的内核源码rpm包：
+
+	[root@Centos7-1 home]# uname -r
+	3.10.0-327.3.1.el7.x86_64
+
+安装内核源码rpm包：
+
+	[root@Centos7-1 home]# rpm -ivh kernel-3.10.0-327.3.1.el7.src.rpm
+	Updating / installing...
+   	1:kernel-3.10.0-327.3.1.el7        ################################# [100%]
+
+然后/root/rpmbuild/SOURCES目录下会生成对应的内核源码压缩包：
+
+	/root/rpmbuild/SOURCES/linux-3.10.0-327.3.1.el7.tar.xz
+
+解压该压缩包就可以得到当前运行内核的源码：
+
+	tar -xvf linux-3.10.0-327.3.1.el7.tar.xz
+
+接下来进入内核源码kvm模块的目录并清理编译环境：
+
+	cd /root/rpmbuild/SOURCES/linux-3.10.0-327.3.1.el7/arch/x86/kvm
+	
+	make clean CONFIG_KVM=m CONFIG_INTEL_KVM=m -C /root/rpmbuild/SOURCES/linux-3.10.0-327.3.1.el7/ M=/root/rpmbuild/SOURCES/linux-3.10.0-327.3.1.el7/arch/x86/kvm           //编译环境清理
+
+单独编译kvm模块：
+
+	make CONFIG_KVM=m CONFIG_INTEL_KVM=m -C /root/rpmbuild/SOURCES/linux-3.10.0-327.3.1.el7/ M=/root/rpmbuild/SOURCES/linux-3.10.0-327.3.1.el7/arch/x86/kvm          //编译模块   
 
 
+编译报错：
+
+	make: Entering directory `/root/rpmbuild/SOURCES/linux-3.10.0-327.3.1.el7'
+	
+  	ERROR: Kernel configuration is invalid.
+    	     include/generated/autoconf.h or include/config/auto.conf are missing.
+   		     Run 'make oldconfig && make prepare' on kernel src to fix it.
+	
+	
+  	WARNING: Symbol version dump /root/rpmbuild/SOURCES/linux-3.10.0-327.3.1.el7/Module.symvers is missing; modules will have no dependencies and modversions.
+
+  	LD      /root/rpmbuild/SOURCES/linux-3.10.0-327.3.1.el7/arch/x86/kvm/built-in.o
+  	CC [M]  /root/rpmbuild/SOURCES/linux-3.10.0-327.3.1.el7/arch/x86/kvm/../../../virt/kvm/kvm_main.o
+	In file included from <command-line>:0:0:
+	/root/rpmbuild/SOURCES/linux-3.10.0-327.3.1.el7/include/linux/kconfig.h:4:32: fatal error: generated/autoconf.h: No such file or directory
+ 	#include <generated/autoconf.h>
+	                                ^
+	compilation terminated.
+	make[1]: *** [/root/rpmbuild/SOURCES/linux-3.10.0-327.3.1.el7/arch/x86/kvm/../../../virt/kvm/kvm_main.o] Error 1
+	make: *** [_module_/root/rpmbuild/SOURCES/linux-3.10.0-327.3.1.el7/arch/x86/kvm] Error 2
+	make: Leaving directory `/root/rpmbuild/SOURCES/linux-3.10.0-327.3.1.el7'
+
+报错原因是没有构建内核源码树，解决的办法当然是先构建内核源码树，进入内核源码根目录并执行：
+	
+	make oldconfig && make -j
+
+之后重新编译kvm模块就可以成功了。编译完成后，可以看到kvm模块源码目录下生成了几个ko文件：
+
+	[root@Centos7-1 kvm]# ll | grep ko
+	-rw-r--r-- 1 root root 1075656 Jan 19 22:08 kvm-amd.ko
+	-rw-r--r-- 1 root root 1818303 Jan 19 22:08 kvm-intel.ko
+	-rw-r--r-- 1 root root 9563429 Jan 19 22:08 kvm.ko
+
+用编译出的ko模块替换之前的模块（模块路径：/usr/lib/modules/），然后重新生成依赖：
+
+	depmod -a
+
+然后重新加载自编译模块到内核即可：
+
+	modprobe kvm-intel
+
+通过上面的方法，可以在kvm源码中加入调试信息或者利用dump_stack打印函数调用堆栈，以此来调试kvm。
 
 
 玩的开心 !!!
