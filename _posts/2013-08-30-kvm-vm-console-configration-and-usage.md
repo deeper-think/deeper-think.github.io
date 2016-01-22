@@ -1,7 +1,7 @@
 ---
 layout: post
 title: KVM虚拟机串口配置及使用
-category: 计算虚拟化
+category: KVM虚拟化
 tags: [KVM，console]
 keywords: KVM，console
 description: 
