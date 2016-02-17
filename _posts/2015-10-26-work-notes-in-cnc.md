@@ -100,7 +100,9 @@ chkconfig 命令可以查看、修改、配置开机自启动服务：
 ### 5 yum epel源地址
 
 	http://dl.fedoraproject.org/pub/epel/beta/7/x86_64/epel-release-7-0.2.noarch.rpm
-
+	
+	http://dl.fedoraproject.org/pub/epel/
+	
 
 ### 6 centos7 相关配置文件及命令
 
