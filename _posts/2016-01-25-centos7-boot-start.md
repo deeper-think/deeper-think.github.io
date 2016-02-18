@@ -1,6 +1,6 @@
 ---
 layout: post
-title: centos7开机启动问题
+title: centos7 rc.local问题
 category: 技术
 tags: [centos7，rc.local]
 keywords: centos7，rc.local
