@@ -1,6 +1,6 @@
 ---
 layout: post
-title: KVM虚拟化组件编译及调试环境搭建
+title: 虚拟化组件编译及调试环境搭建
 category: KVM虚拟化
 tags: [KVM，qemu，编译，调试]
 keywords: KVM，qemu，编译，调试
