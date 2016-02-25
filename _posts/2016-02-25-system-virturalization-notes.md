@@ -9,49 +9,15 @@ description:
 
 > 用正确的工具，做正确的事情
 
-centos6及之前版本的OS，开机启动执行的脚本可以通过直接写到/etc/rc.d/rc.local文件中来实现，然而测试发现centos7 os 写到该文件中的脚本开机并没有被执行，在redhat官方bugzilla中找到了问题的原因-- [bugzilla链接](https://bugzilla.redhat.com/show_bug.cgi?id=1178488)，重点信息：
+### 虚拟化的本质
 
-	This is intentional, we want users to understatnd that rc.local does not and can't work in the same way as in rhel6.
-	There is a explanatory comment in the rc.local.
-	
-	# THIS FILE IS ADDED FOR COMPATIBILITY PURPOSES
-	#
-	# It is highly advisable to create own systemd services or udev rules
-	# to run scripts during boot instead of using this file.
-	#
-	# In contrast to previous versions due to parallel execution during boot
-	# this script will NOT be run after all other services.
-	#
-	# Please note that you must run 'chmod +x /etc/rc.d/rc.local' to ensure
-	# that this script will be executed during boot.
+> 本质上，虚拟化是由位于下层的软件模块，通过向上一层软件模块提供一个与它原先所期待的运行环境完全一致的接口的方法，抽象出一个虚拟的软件或硬件接口，使得上层软件可以直接运行在虚拟的环境上。
+> 计算虚拟化，虚拟机的三个典型特征是：同质、高效和资源受控。
 
-从官方回复看，rc.local中脚本开机时没有自动执行并不是系统bug，而是故意为之，新版本OS希望使用systemd services的方式来实现开机执行或者开机启动，看了 rc.local文件已经在弃用的路上了。
+### 云计算的本质
 
-下面验证了通过systemd services来实现开机执行命令，首先是创建一个自己的systemd 服务，在
-/usr/lib/systemd/system/ 目录创建服务配置文件bootstart.service：
+> 云计算的核心思想就是在服务器端提供集中的计算资源，同时这些计算资源要独立的服务于不同的用户，也就是在共享的同时，为每个用户提供隔离、安全、可信的工作环境。
 
-	[Unit]
-	Description=bootstart      //服务描述
-	
-	[Service]
-	Type=forking               //服务后台执行
-	ExecStart=/usr/local/bootstart/bin/bootstart.sh   //服务启动文件或者脚本
-	PrivateTmp=true                                   //创建独立命名空间
-	
-	[Install]
-	WantedBy=multi-user.target                      
-
-其中/usr/local/bootstart/bin/bootstart.sh：
-	
-	#!/bin/bash
-	
-	echo "`date`:system start !!" >> /usr/local/bootstart/log/bootstart.log
-	
-然后设置服务开机启动：
-
-		systemctl enable bootstart.service
-
-重启系统查看日志文件，可以发现脚本中的命令被开机执行。
 
 
 
