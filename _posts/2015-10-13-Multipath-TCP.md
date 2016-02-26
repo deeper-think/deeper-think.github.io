@@ -71,9 +71,6 @@ MPTCP连接两端的HOST需要对新创建添加的子TCP流有唯一的标示�
 ![MPTCP使用多条流进行传输](http://7u2rbh.com1.z0.glb.clouddn.com/paasch4.png)
 
 
-未完，待续！！！
-
-
 ## 参考：　
 
 1. [Multipath TCP-译自](http://queue.acm.org/detail.cfm?id=2591369)
