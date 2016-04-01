@@ -144,5 +144,22 @@ grub2文件（软连接，实际上连接到/boot/grub2/grub.cfg）：
 
 ### 10 squid清除已经缓存的内容
 	/usr/local/squid/bin/squidclient -p 80 -m PURGE "url"
+	
+### 11 squid配置HTTP优化相关
+	mem_hot_onoff off  //on的话为首次命中不缓存，为提高命中率该配置应该为off
+	
+	maximum_original_buffer_size 300 KB//对响应的内容针对某些关键字进行提花
+	read_ahead_gap 300 KB
+	keyword_replace_for_HTTP10_onoff on
+	
+	page_replace_content_fulltext on
+	keyword_replace_access allow all
+	keyword_replace_log /usr/local/squid/var/logs/keyword_replace.log
+	page_rewrite_content_type text/plain text/xml text/html application/json text/javascript xml
+	keyword_list https
+	replace_string_list http
+	
+	redirect_forward 301 302 //分频配置，源站响应302不直接响应给用户而是再次请求得到200响应再返回给用户。
+	
 
 Have a fun！！！
