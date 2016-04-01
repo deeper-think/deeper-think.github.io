@@ -129,7 +129,20 @@ grub2文件（软连接，实际上连接到/boot/grub2/grub.cfg）：
 
 	http://vault.centos.org/6.6/updates/Source/SPackages/
 
+	
+### 9 squid 配置403响应
 
+	acl rsp_403_domains reqdomain dlsw.baidu.com
+	http_access deny rsp_403_domains
 
+注意squid访问控制规则在配置文件中的先后顺序决定了规则生效的优先级，如果一个HTTP请求已经被前面的规则匹配，则会按照前面的策略实现访问控制，后面的规则则不会生效。
+
+### 10 squid 未命中资源先响应部分请求头
+
+	acl rsp_5bytes_domains url_regex ^http:.*
+	reply_5bytes_in_advance_access allow rsp_5bytes_domains
+
+### 10 squid清除已经缓存的内容
+	/usr/local/squid/bin/squidclient -p 80 -m PURGE "url"
 
 Have a fun！！！
