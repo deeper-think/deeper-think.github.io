@@ -1,7 +1,7 @@
 ---
 layout: post
 title: flashcache混合存储环境搭建
-category: 技术
+category: 系统及服务部署配置
 tags: [混合存储, flashcache]
 keywords: flashcache
 description: 
