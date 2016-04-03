@@ -1,7 +1,7 @@
 ---
 layout: post
 title: netmap 安装及收发包测试
-category: 技术
+category: 系统及服务
 tags: [netmap]
 keywords: netmap
 description: 

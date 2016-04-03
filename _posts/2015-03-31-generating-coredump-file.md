@@ -1,7 +1,7 @@
 ---
 layout: post
 title: linux环境产生并调试coredump文件
-category: 技术
+category: 编程调试技巧
 tags: [gdb, coredump]
 keywords: gdb, coredump
 description: 

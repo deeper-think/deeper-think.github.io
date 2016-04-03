@@ -1,7 +1,7 @@
 ---
 layout: post
 title: coroutine编程初探
-category: 编程调试技术
+category: 编程调试技巧
 tags: [coroutine]
 keywords: coroutine
 description: 

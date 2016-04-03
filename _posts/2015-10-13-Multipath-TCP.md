@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Multipath TCP（译）
-category: 技术
+category: 网络协议
 tags: [Multipath, TCP]
 keywords: Multipath,TCP
 description:

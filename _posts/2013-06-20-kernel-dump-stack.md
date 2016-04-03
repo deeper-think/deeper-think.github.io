@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 内核调试之dump_stack
-category: 技术
+category: 编程调试技巧
 tags: [kernel, debug]
 keywords: kernel, debug
 description: 

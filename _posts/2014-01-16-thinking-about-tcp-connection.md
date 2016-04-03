@@ -1,7 +1,7 @@
 ---
 layout: post
 title: TCP连接的一些思考及验证
-category: 技术
+category: 网络协议
 tags: [TCP连接]
 keywords: TCP连接
 description: 

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: linux 配置网卡bonding
-category: 工具
+category: 系统及服务
 tags: [bonding]
 keywords: bonding
 description:

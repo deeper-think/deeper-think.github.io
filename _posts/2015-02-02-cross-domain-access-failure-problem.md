@@ -1,7 +1,7 @@
 ---
 layout: post
 title: flashsocket 跨域访问失败问题
-category: 技术
+category: 系统及服务
 tags: [Flash,Cache]
 keywords: Flash,Cache,缓存,跨域访问,跨域策略
 description: 

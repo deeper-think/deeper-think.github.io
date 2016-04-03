@@ -1,7 +1,7 @@
 ---
 layout: post
 title: c/c++中的变长参数:va_list的用法
-category: 技术
+category: 编程调试技巧
 tags: [linux c, 变长参数]
 keywords: linux c, 变长参数
 description: 

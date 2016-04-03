@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 工作笔记（华为）
-category: 工作
+category: 工作笔记
 tags: [work-notes]
 keywords: work-notes
 description:

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Centos6.5环境本地安装jekyll环境 
-category: 技术
+category: 系统及服务
 tags: [jekyll]
 keywords: jekyll环境,ruby,nodejs
 description: 

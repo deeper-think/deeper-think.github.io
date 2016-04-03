@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 常用排序算法实现及复杂度分析
-category: 技术
+category: 编程调试技巧
 tags: [排序算法, sort]
 keywords: 排序算法
 description: 

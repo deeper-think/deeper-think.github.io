@@ -1,7 +1,7 @@
 ---
 layout: post
 title: CentOS利用ISO镜像搭建本地yum源
-category: 工具
+category: 系统及服务
 tags: [本地源,yum]
 keywords: yum
 description:

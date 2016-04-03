@@ -1,7 +1,7 @@
 ---
 layout: post
 title: centos7网络及bond0配置 
-category: 技术
+category: 系统及服务
 tags: [centos7，网络配置，bond0配置]
 keywords: centos7，网络配置，bond0配置
 description: 

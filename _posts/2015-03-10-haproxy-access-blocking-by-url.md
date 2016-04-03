@@ -1,7 +1,7 @@
 ---
 layout: post
 title: haproxy基于url对HTTP请求进行封锁
-category: 技术
+category: 系统及服务
 tags: [haproxy]
 keywords: haproxy
 description: 

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: DNS相关技术总结
-category: 技术
+category: 系统及服务
 tags: [DNS, bind]
 keywords: DNS,bind
 description:

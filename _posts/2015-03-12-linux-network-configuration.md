@@ -1,7 +1,7 @@
 ---
 layout: post
 title: linux常用配置
-category: 工具
+category: 系统及服务
 tags: [network, linux]
 keywords: network, linux
 description: 

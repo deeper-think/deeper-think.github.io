@@ -1,7 +1,7 @@
 ---
 layout: post
 title: centos7 rc.local问题
-category: 技术
+category: 系统及服务
 tags: [centos7，rc.local]
 keywords: centos7，rc.local
 description: 

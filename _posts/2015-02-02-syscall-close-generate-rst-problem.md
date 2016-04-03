@@ -1,7 +1,7 @@
 ---
 layout: post
 title: CLOSE调用导致TCPRST问题
-category: 技术
+category: 网络协议
 tags: [TCP]
 keywords: TCP，close
 description: 

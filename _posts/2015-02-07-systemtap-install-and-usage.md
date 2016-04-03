@@ -1,7 +1,7 @@
 ---
 layout: post
 title: systemtap 安装及常用脚本
-category: 工具
+category: 工具使用
 tags: [systemtap]
 keywords: systemtap
 description: 

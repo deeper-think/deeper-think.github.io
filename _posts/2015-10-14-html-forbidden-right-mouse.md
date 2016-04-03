@@ -1,7 +1,7 @@
 ---
 layout: post
 title: HTML页面禁止鼠标右键
-category: 技术
+category: 编程调试技巧
 tags: [HTML, JavaScript]
 keywords: Multipath,TCP
 description:
