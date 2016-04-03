@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 关于MTU、MSS、TSO、GSO
-category: 技术
+category: 网络协议
 tags: [协议栈, MSS, MTU, TSO/GSO]
 keywords: 协议栈, MSS, MTU, TSO/GSO
 description:
