@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 工作笔记（网宿）
+title: 工作随记
 category: 工作笔记
 tags: [work-notes]
 keywords: work-notes
@@ -9,7 +9,42 @@ description:
 
 > 用正确的工具，做正确的事情
 
-### 1 tcpdump 抓TCP三次握手相关数据包
+### 1 gdb常用调试命令
+
+	backtrace（或bt）	\\查看各级函数调用及参数
+	finish				\\连续运行到当前函数返回为止，然后停下来等待命令
+	frame（或f） 		\\帧编号	选择栈帧
+	info（或i） 			\\locals	查看当前栈帧局部变量的值
+	list（或l）			\\列出源代码，接着上次的位置往下列，每次列10行
+	list 行号			\\列出从第几行开始的源代码
+	list 函数名			\\列出某个函数的源代码
+	next（或n）			\\执行下一行语句
+	print（或p）			\\打印表达式的值，通过表达式可以修改变量的值或者调用函数
+	quit（或q）			\\退出gdb调试环境
+	set var				\\修改变量的值
+	start				\\开始执行程序，停在main函数第一行语句前面等待命令
+	step（或s）			\\执行下一行语句，如果有函数调用则进入到函数中
+	
+### 2 source Insight常用快捷键总结
+
+	Ctrl+= :Jump to definition
+	Alt+/ :Look up reference
+	F3 : search backward
+	F4 : search forward
+	F5: go to Line
+	F7 :Look up symbols
+	F8 :Look up local symbols
+	F9 :Ident left
+	F10 :Ident right
+	Alt+, :Jump backword
+	Alt+. : Jump forward
+	Shift+F3 : search the word under cusor backward
+	Shift+F4 : search the word under cusor forward
+	F12 : incremental search
+	Shift+Ctrl+f: search in project
+	shift+F8 : hilight word
+
+### 3 tcpdump 抓TCP三次握手相关数据包
 
 	// 捕获syn数据包
 	tcpdump -i <interface> "tcp[tcpflags] & (tcp-syn) != 0" 
@@ -26,11 +61,11 @@ description:
 	// 捕获RST包
 	tcpdump -r <interface> "tcp[tcpflags] & (tcp-rst) != 0"
 
-### 2 路由跟踪及链路状态监测
+### 4 路由跟踪及链路状态监测
 
 	mtr hostname or IP
 
-### 3 常用脚本参数
+### 5 常用脚本参数
 	
 echo 输出不换行：
 	
@@ -46,7 +81,7 @@ set 命令用法：
 	[root@bogon xuc]# echo $(/sbin/runlevel)
 	N 5
 
-### 4 linux 开机自启动或自执行
+### 6 linux 开机自启动或自执行
 
 /etc/rc.local文件中配置linux系统开机自动执行脚本：
 	
@@ -92,19 +127,19 @@ chkconfig 命令可以查看、修改、配置开机自启动服务：
 	id:5:initdefault:
 
 
-### 4 linux history 命令显示时间
+### 7 linux history 命令显示时间
 
 	HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S "
 	
 
-### 5 yum epel源地址
+### 8 yum epel源地址
 
 	http://dl.fedoraproject.org/pub/epel/beta/7/x86_64/epel-release-7-0.2.noarch.rpm
 	
 	http://dl.fedoraproject.org/pub/epel/
 	
 
-### 6 centos7 相关配置文件及命令
+### 9 centos7 相关配置文件及命令
 
 grub配置文件（静态配置文件，用于生成启动grub2文件）：
 
@@ -118,34 +153,34 @@ grub2文件（软连接，实际上连接到/boot/grub2/grub.cfg）：
 
 	grub2-mkconfig -o /boot/grub2/grub.cfg
 
-### 7 tar压缩文件命令
+### 10 tar压缩文件命令
 
 	tar -zcvf test.tar.gz ./test
 
 压缩本地目录下的test文件，并生成压缩文件test.tar.gz。
 
 
-### 8 centos发行版rpm包源码包
+### 11 centos发行版rpm包源码包
 
 	http://vault.centos.org/6.6/updates/Source/SPackages/
 
 	
-### 9 squid 配置403响应
+### 12 squid 配置403响应
 
 	acl rsp_403_domains reqdomain dlsw.baidu.com
 	http_access deny rsp_403_domains
 
 注意squid访问控制规则在配置文件中的先后顺序决定了规则生效的优先级，如果一个HTTP请求已经被前面的规则匹配，则会按照前面的策略实现访问控制，后面的规则则不会生效。
 
-### 10 squid 未命中资源先响应部分请求头
+### 13 squid 未命中资源先响应部分请求头
 
 	acl rsp_5bytes_domains url_regex ^http:.*
 	reply_5bytes_in_advance_access allow rsp_5bytes_domains
 
-### 10 squid清除已经缓存的内容
+### 14 squid清除已经缓存的内容
 	/usr/local/squid/bin/squidclient -p 80 -m PURGE "url"
 	
-### 11 squid配置HTTP优化相关
+### 15 squid配置HTTP优化相关
 	mem_hot_onoff off  //on的话为首次命中不缓存，为提高命中率该配置应该为off
 	
 	maximum_original_buffer_size 300 KB//对响应的内容针对某些关键字进行提花
