@@ -32,7 +32,7 @@ disqus:
   shortname: deeperthink
 
 # 主题设置，自动激活某个标签
-active: 技术
+active: KVM虚拟化
 
 # 首页除了最新文章外显示分类
 cates: 
