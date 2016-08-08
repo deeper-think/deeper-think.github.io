@@ -181,6 +181,7 @@ grub2文件（软连接，实际上连接到/boot/grub2/grub.cfg）：
 	/usr/local/squid/bin/squidclient -p 80 -m PURGE "url"
 	
 ### 15 squid配置HTTP优化相关
+
 	mem_hot_onoff off  //on的话为首次命中不缓存，为提高命中率该配置应该为off
 	
 	maximum_original_buffer_size 300 KB//对响应的内容针对某些关键字进行提花
@@ -195,6 +196,47 @@ grub2文件（软连接，实际上连接到/boot/grub2/grub.cfg）：
 	replace_string_list http
 	
 	redirect_forward 301 302 //分频配置，源站响应302不直接响应给用户而是再次请求得到200响应再返回给用户。
+
+### 16 frigate相关配置
 	
+将来自指定IP地址的HTTP流量引导到HA\/CS，其他流量走本地回源（针对探针优化），frigate.conf 配置：
+	
+	"source_groups":[
+                "sg_tuning 172.31.253.13/32"
+                // "<label> [ip/mask ip/mask ip/mask]>"
+     ],
+	
+	"routing":[
+        //<BY=IP> <filter=destination_group/source_group> <TO=PEER/SOURCE/RESET> <IGNORE:COMPASS;PAYLOAD>
+        "IP sg_tuning source",
+	],
+
+module_http.conf 配置：
+
+	"nextproxies":[
+                        // "<label> <balance> <peers=[ip:port ip:port ip:port]>"
+                        "npTz HASH 192.168.20.45:8101",
+                ],
+	
+	"nextproxy_clusters":[
+                        // "<label> <primary groups> <standby groups>"
+                        "np_clusterTz npTz:1",
+	],
+
+	"source_groups":[
+                "sg_tz 120.198.57.148/32"
+                ],
+
+	"routing":[
+                //liantong
+	"IP sg_tz NEXTPROXY np_clusterTz",
+	],
+	
+
+
+
+
+	
+		
 
 Have a fun！！！
