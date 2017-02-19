@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 网宿工作随记
+title: 工作随记
 category: 个人笔记
 tags: [work-notes]
 keywords: work-notes

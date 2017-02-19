@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 网宿工作笔记：传输加密功能
+title: 工作笔记：传输加密功能
 category: 个人笔记
 tags: [内核、传输加密]
 keywords: 内核、传输优化、传输加密
