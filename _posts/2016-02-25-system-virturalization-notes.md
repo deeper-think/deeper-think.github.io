@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 读书笔记：系统虚拟化：原理与实现
+title: 读书笔记-系统虚拟化：原理与实现
 category: 个人笔记
 tags: [virturalization]
 keywords: virturalization
