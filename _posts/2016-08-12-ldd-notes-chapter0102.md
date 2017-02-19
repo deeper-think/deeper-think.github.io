@@ -1,6 +1,6 @@
 ---
 layout: post
-title:读书笔记-linux设备驱动程序（0102）
+title:读书笔记-linux设备驱动程序chapter02
 category: 个人笔记
 tags: [内核、驱动程序]
 keywords:内核、驱动程序
