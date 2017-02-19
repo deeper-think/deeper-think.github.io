@@ -1,7 +1,7 @@
 ---
 layout: post
-title: 工作随记
-category: 工作笔记
+title: 网宿工作随记
+category: 个人笔记
 tags: [work-notes]
 keywords: work-notes
 description:
