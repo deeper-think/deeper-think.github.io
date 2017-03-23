@@ -1,6 +1,6 @@
 ---
 layout: post
-title: qemu blockio后端不同 cache、io 模式分析
+title: qemu blockio后端cache、io模式分析
 category: KVM虚拟化
 tags: [KVM，qemu]
 keywords: KVM，qemu
