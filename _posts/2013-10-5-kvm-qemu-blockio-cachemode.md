@@ -27,8 +27,9 @@ libvirt官方指导文档对qemu cache、io支持的模式以及每种模式的�
 
 >The optional io attribute controls specific policies on I/O; qemu guests support "threads" and "native". Since 0.8.8
 
+从字面上里面存在一些模糊不清的地方，下面从代码的角度进行分析上面不同模式的区别。
 
-## qemu组件
+## cache 模式分析
 
 ### qemu源码下载
 qemu是kvm虚拟化方案的核心组件，kvm模块提供了实现虚拟化的核心功能包括虚拟机cpu管理、内存管理等 ，并对外提供功能调用的接口，但kvm并不负责完整虚拟机的创建及外围硬件设备的模拟，这些功能由用户态组件qemu来实现。
