@@ -1,6 +1,6 @@
 ---
 layout: post
-title: qemu 中的尾队列实现分析
+title: qemu 尾队列分析及应用
 category: KVM虚拟化
 tags: [KVM，qemu]
 keywords: KVM，qemu
