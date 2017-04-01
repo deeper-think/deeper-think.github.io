@@ -19,8 +19,7 @@ qemu中有很多采用“队列”结构来组织数据结构，比如QemuOpts�
 
 尾队列的结构如下，图1是队列为空时的结构，图2是包括三个元素的队列结构。
 
-
-
+![尾队列指针结构](http://7u2rbh.com1.z0.glb.clouddn.com/tailqueue.png)
 
 
 ### tail queue的定义
@@ -192,7 +191,183 @@ QTAILQ\_ENTRY(type) 定义了一个结构体类型，该结构体类型包括两
 
 宏QTAILQ\_PREV(elm, headname, field)为指向elm前面一个元素的指针。
 
+## 利用tail queue创建和使用队列
 
+示例代码如下：
+
+	#include<stdio.h>
+	#include<stdlib.h>
+	#include<string.h>
+	#include "queue.h"
+	
+	struct AddrBook {
+	    int total_acount;
+    	const char * tag;
+    	QTAILQ_HEAD(AddrBookHead, Contact) head;
+	};
+	
+	struct Contact {
+    	const char *name;
+    	const char *telnum;
+    	QTAILQ_ENTRY(Contact) next;
+	};
+	
+	typedef struct AddrBook AddrBook;
+	typedef struct Contact Contact;
+	
+	static AddrBook myAddrBook = {
+    	.total_acount = 0,
+    	.tag = "MyAddressBook",
+    	.head = QTAILQ_HEAD_INITIALIZER(myAddrBook.head),
+	};
+	
+	Contact* contact_create(const char* name, const char* telnum);
+	
+	void main()
+	{
+	
+    	Contact* contact = NULL;
+    	printf("Insert head: <name1,15960270001>\n");
+    	contact = contact_create("name1","15960270001");
+    	QTAILQ_INSERT_HEAD(&myAddrBook.head,contact,next);
+	
+    	printf("Insert head: <name2,15960270002>\n");
+    	contact = contact_create("name2","15960270002");
+    	QTAILQ_INSERT_HEAD(&myAddrBook.head,contact,next);
+	
+    	printf("Insert head: <name3,15960270003>\n");
+    	contact = contact_create("name3","15960270003");
+    	QTAILQ_INSERT_HEAD(&myAddrBook.head,contact,next);
+	
+    	printf("Insert head: <name4,15960270004>\n");
+    	contact = contact_create("name4","15960270004");
+    	QTAILQ_INSERT_HEAD(&myAddrBook.head,contact,next);
+	
+    	printf("Traversing the queue foreach elements: \n");
+    	QTAILQ_FOREACH(contact, &myAddrBook.head, next)
+    	    printf("%s,%s\n",contact->name,contact->telnum);
+	
+    	printf("Traversing the queue foreach elements by reverse: \n");
+    	QTAILQ_FOREACH_REVERSE(contact, &myAddrBook.head, AddrBookHead, next)
+    	    printf("%s,%s\n",contact->name,contact->telnum);
+	
+    	printf("Insert tail: <name5,15960270005>\n");
+    	contact = contact_create("name5","15960270005");
+    	QTAILQ_INSERT_TAIL(&myAddrBook.head,contact,next);
+
+		printf("Insert tail: <name6,15960270006>\n");
+    	contact = contact_create("name6","15960270006");
+    	QTAILQ_INSERT_TAIL(&myAddrBook.head,contact,next);
+	
+    	printf("Traversing the queue foreach elements: \n");
+    	QTAILQ_FOREACH(contact, &myAddrBook.head, next)
+        printf("%s,%s\n",contact->name,contact->telnum);
+	
+    	printf("Insert <name7,15960270007> after <name3, 15960270003> \n");
+    	Contact* listelm = NULL;
+    	QTAILQ_FOREACH(contact, &myAddrBook.head, next)
+    	{
+    	    listelm = contact;
+    	    if(0==strcmp(listelm->name,"name3")) break;
+    	}
+    	contact = contact_create("name7","15960270007");
+    	QTAILQ_INSERT_AFTER(&myAddrBook.head, listelm, contact, next);
+	
+    	printf("Traversing the queue foreach elements: \n");
+    	QTAILQ_FOREACH(contact, &myAddrBook.head, next)
+    	    printf("%s,%s\n",contact->name,contact->telnum);
+	
+    	printf("Insert <name8,1596027000> before <name1, 15960270001> \n");
+    	QTAILQ_FOREACH(contact, &myAddrBook.head, next)
+    	{
+    	    listelm = contact;
+    	    if(0==strcmp(listelm->name,"name1")) break;
+    	}
+    	contact = contact_create("name8","15960270008");
+    	QTAILQ_INSERT_BEFORE(listelm, contact, next);	
+		
+		printf("Traversing the queue foreach elements: \n");
+    	QTAILQ_FOREACH(contact, &myAddrBook.head, next)
+        	printf("%s,%s\n",contact->name,contact->telnum);
+	
+    	printf("Remove <name2, 1596027000> from queue\n");
+    	QTAILQ_FOREACH(contact, &myAddrBook.head, next)
+    	{
+        	listelm = contact;
+        	if(0==strcmp(listelm->name,"name2")) break;
+    	}
+    	QTAILQ_REMOVE(&myAddrBook.head, listelm, next);
+	
+    	printf("Traversing the queue foreach elements: \n");
+    	QTAILQ_FOREACH(contact, &myAddrBook.head, next)
+        	printf("%s,%s\n",contact->name,contact->telnum);
+	}
+	
+	Contact* contact_create(const char* name, const char* telnum)
+	{
+    	Contact* contact = malloc(sizeof(*contact));
+    	contact->name = name;
+    	contact->telnum = telnum;
+    	return contact;
+	}
+
+
+编译执行输出如下：
+
+	-bash-4.2# ./a.out
+	Insert head: <name1,15960270001>
+	Insert head: <name2,15960270002>
+	Insert head: <name3,15960270003>
+	Insert head: <name4,15960270004>
+	Traversing the queue foreach elements:
+	name4,15960270004
+	name3,15960270003
+	name2,15960270002
+	name1,15960270001
+	Traversing the queue foreach elements by reverse:
+	name1,15960270001
+	name2,15960270002
+	name3,15960270003
+	name4,15960270004
+	Insert tail: <name5,15960270005>
+	Insert tail: <name6,15960270006>
+	Traversing the queue foreach elements:
+	name4,15960270004
+	name3,15960270003
+	name2,15960270002
+	name1,15960270001
+	name5,15960270005
+	name6,15960270006
+	Insert <name7,15960270007> after <name3, 15960270003>
+	Traversing the queue foreach elements:
+	name4,15960270004
+	name3,15960270003
+	name7,15960270007
+	name2,15960270002
+	name1,15960270001
+	name5,15960270005
+	name6,15960270006
+	Insert <name8,1596027000> before <name1, 15960270001>
+	Traversing the queue foreach elements:
+	name4,15960270004
+	name3,15960270003
+	name7,15960270007
+	name2,15960270002
+	name8,15960270008
+	name1,15960270001
+	name5,15960270005
+	name6,15960270006
+	Remove <name2, 1596027000> from queue
+	Traversing the queue foreach elements:
+	name4,15960270004
+	name3,15960270003
+	name7,15960270007
+	name8,15960270008
+	name1,15960270001
+	name5,15960270005
+	name6,15960270006
+
+注意QTAILQ_REMOVE只是将元素从队列中删除，但是该元素本身还是存在与内存中，并没有在内存中被释放。
 
 
 
