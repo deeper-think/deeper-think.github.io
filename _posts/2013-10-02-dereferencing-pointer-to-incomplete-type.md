@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 关于编译报错dereferencing pointer to incomplete type以及typedef的理解
+title: 关于dereferencing pointer to incomplete type以及typedef的理解
 category: 编程调试技巧
 tags: [编译错误]
 keywords: 编译错误
