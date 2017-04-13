@@ -31,6 +31,52 @@ libvirt官方指导文档对qemu cache、io支持的模式以及每种模式的�
 
 ## cache 模式分析
 
+qemu后端打开block设备的镜像文件：
+
+	(gdb) bt
+	#0  qemu_open (name=0x7f72f93760e0 "/home/vms/centos_6_8_ldd.img", flags=16386) at util/osdep.c:206
+	#1  0x00007f72f7190226 in raw_open_common (bs=0x7f72f9370af0, options=0x7f72f9375020, bdrv_flags=24738, open_flags=0, errp=0x7ffe770f2810)
+    at block/raw-posix.c:443
+	#2  0x00007f72f7190536 in raw_open (bs=0x7f72f9370af0, options=0x7f72f9375020, flags=24738, errp=0x7ffe770f2810) at block/raw-posix.c:538
+	#3  0x00007f72f7136a57 in bdrv_open_common (bs=0x7f72f9370af0, file=0x0, options=0x7f72f9375020, errp=0x7ffe770f28d8) at block.c:1117
+	#4  0x00007f72f71386de in bdrv_open_inherit (filename=0x7f72f9368e50 "/home/vms/centos_6_8_ldd.img", reference=0x0, options=0x7f72f9375020, flags=41090,
+    parent=0x7f72f936a650, child_role=0x7f72f7a6a140 <child_file>, errp=0x7ffe770f2a28) at block.c:1846
+	#5  0x00007f72f7137d9a in bdrv_open_child (filename=0x7f72f9368e50 "/home/vms/centos_6_8_ldd.img", options=0x7f72f936e8e0,
+    bdref_key=0x7f72f766783a "file", parent=0x7f72f936a650, child_role=0x7f72f7a6a140 <child_file>, allow_none=true, errp=0x7ffe770f2a28) at block.c:1601
+	#6  0x00007f72f713855c in bdrv_open_inherit (filename=0x7f72f9368e50 "/home/vms/centos_6_8_ldd.img", reference=0x0, options=0x7f72f936e8e0, flags=8322,
+    parent=0x0, child_role=0x0, errp=0x7ffe770f2d18) at block.c:1807
+	#7  0x00007f72f7138aef in bdrv_open (filename=0x7f72f9368e50 "/home/vms/centos_6_8_ldd.img", reference=0x0, options=0x7f72f9367d90, flags=128,
+    errp=0x7ffe770f2d18) at block.c:1937
+	#8  0x00007f72f71890c2 in blk_new_open (filename=0x7f72f9368e50 "/home/vms/centos_6_8_ldd.img", reference=0x0, options=0x7f72f9367d90, flags=128,
+    errp=0x7ffe770f2d18) at block/block-backend.c:160
+	#9  0x00007f72f6ed8b42 in blockdev_init (file=0x7f72f9368e50 "/home/vms/centos_6_8_ldd.img", bs_opts=0x7f72f9367d90, errp=0x7ffe770f2d18)
+    at blockdev.c:582
+	#10 0x00007f72f6ed9c72 in drive_new (all_opts=0x7f72f92eac60, block_default_type=IF_IDE) at blockdev.c:1080
+	#11 0x00007f72f6ef1c7d in drive_init_func (opaque=0x7f72f9308e80, opts=0x7f72f92eac60, errp=0x0) at vl.c:1187
+	#12 0x00007f72f7222db2 in qemu_opts_foreach (list=0x7f72f7a8f2a0 <qemu_drive_opts>, func=0x7f72f6ef1c4d <drive_init_func>, opaque=0x7f72f9308e80,
+    errp=0x0) at util/qemu-option.c:1116
+	#13 0x00007f72f6efa30f in main (argc=51, argv=0x7ffe770f3228, envp=0x7ffe770f33c8) at vl.c:4482
+
+
+	#0  raw_open (bs=0x7efcaa5d5650, options=0x7efcaa5d98e0, flags=8354, errp=0x7fffe04a2790) at block/raw_bsd.c:414
+	#1  0x00007efca80c3ad2 in bdrv_open_common (bs=0x7efcaa5d5650, file=0x7efcaa5e1190, options=0x7efcaa5d98e0, errp=0x7fffe04a2858) at block.c:1126
+	#2  0x00007efca80c56de in bdrv_open_inherit (filename=0x7efcaa5d3e50 "/home/vms/centos_6_8_ldd.img", reference=0x0, options=0x7efcaa5d98e0, flags=8322,
+    parent=0x0, child_role=0x0, errp=0x7fffe04a2b48) at block.c:1846
+	#3  0x00007efca80c5aef in bdrv_open (filename=0x7efcaa5d3e50 "/home/vms/centos_6_8_ldd.img", reference=0x0, options=0x7efcaa5d2d90, flags=128,
+    errp=0x7fffe04a2b48) at block.c:1937
+	#4  0x00007efca81160c2 in blk_new_open (filename=0x7efcaa5d3e50 "/home/vms/centos_6_8_ldd.img", reference=0x0, options=0x7efcaa5d2d90, flags=128,
+    errp=0x7fffe04a2b48) at block/block-backend.c:160
+	#5  0x00007efca7e65b42 in blockdev_init (file=0x7efcaa5d3e50 "/home/vms/centos_6_8_ldd.img", bs_opts=0x7efcaa5d2d90, errp=0x7fffe04a2b48)
+    at blockdev.c:582
+	#6  0x00007efca7e66c72 in drive_new (all_opts=0x7efcaa555c60, block_default_type=IF_IDE) at blockdev.c:1080
+	#7  0x00007efca7e7ec7d in drive_init_func (opaque=0x7efcaa573e80, opts=0x7efcaa555c60, errp=0x0) at vl.c:1187
+	#8  0x00007efca81afdb2 in qemu_opts_foreach (list=0x7efca8a1c2a0 <qemu_drive_opts>, func=0x7efca7e7ec4d <drive_init_func>, opaque=0x7efcaa573e80,
+    errp=0x0) at util/qemu-option.c:1116
+	#9  0x00007efca7e8730f in main (argc=51, argv=0x7fffe04a3058, envp=0x7fffe04a31f8) at vl.c:4482
+
+
+
+
 ### qemu源码下载
 qemu是kvm虚拟化方案的核心组件，kvm模块提供了实现虚拟化的核心功能包括虚拟机cpu管理、内存管理等 ，并对外提供功能调用的接口，但kvm并不负责完整虚拟机的创建及外围硬件设备的模拟，这些功能由用户态组件qemu来实现。
 
