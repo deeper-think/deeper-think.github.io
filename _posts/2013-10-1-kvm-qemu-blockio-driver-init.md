@@ -1,6 +1,6 @@
 ---
 layout: post
-title: qemu Block之一：block drive初始化过程分析
+title: kvm block IO 之一：qemu block drive初始化过程分析
 category: KVM虚拟化
 tags: [KVM，qemu]
 keywords: KVM，qemu
@@ -282,11 +282,11 @@ module\_call\_init的入参是一个枚举类型的常量，用于表示要初�
 
 ### block\_backends和all\_bdrv\_states队列的建立
 
-对于raw block driver初始化过程， blk_new_open（）函数通过直接调用blk_new（）函数创建blk，函数blk_new（）创建blk同时将blk插入到block\_backends队列中，同时函数blk_new_open（）通过直接调用bdrv_open（），该函数返回一个BlockDriverState结构变量。bdrv_open（）经过一系列的函数调用最终在bdrv_open_inherit（）函数中，通过调用函数bdrv_new（）来创建一个bs，同时将该bs插入到全局队列all\_bdrv\_states中，因此：
+对于raw block driver初始化过程， blk\_new\_open（）函数通过直接调用blk\_new（）函数创建blk，函数blk\_new（）创建blk同时将blk插入到block\_backends队列中，同时函数blk\_new\_open（）通过直接调用bdrv\_open（），该函数返回一个BlockDriverState结构变量。bdrv\_open（）经过一系列的函数调用最终在bdrv\_open\_inherit（）函数中，通过调用函数bdrv\_new（）来创建一个bs，同时将该bs插入到全局队列all\_bdrv\_states中，因此：
 
 > bs是在blk的创建过程中同时创建的，bs和blk都是通过专门的结构变量创建函数来创建，并且在创建后相关的结构变量被直接插入到相关的全局队列中，已被之后查找使用。
 
-进入bdrv_open_inherit函数的调用堆栈如下：
+进入bdrv\_open\_inherit函数的调用堆栈如下：
 
 	(gdb) bt
 	#0  bdrv_open_inherit (
@@ -315,7 +315,7 @@ module\_call\_init的入参是一个枚举类型的常量，用于表示要初�
 	#7  0x00007f4817689356 in main (argc=51, argv=0x7ffee15a9b88,
     	envp=0x7ffee15a9d28) at vl.c:4484
 
-下面详细分析bdrv_open_inherit（）函数的实现：
+下面详细分析bdrv\_open\_inherit（）函数的实现：
 
 	1700 static BlockDriverState *bdrv_open_inherit(const char *filename,
 	1701                                            const char *reference,
@@ -393,7 +393,7 @@ module\_call\_init的入参是一个枚举类型的常量，用于表示要初�
 	......
 	1933 }
 
-1720~1730行如果reference非空的话，表明相应的bs数据结构已经创建，需要通过查找来获取相关bs的引用，通过bdrv_open函数调用进入bdrv_open_inherit时，该参数为空，因此不会进入if分支内部。1739行，reference为空的话那么通过调用bdrv_new（）函数来创建一个bs结构，该函数只是分配变量的内存空间，成员参数全部初始化为0，并将该bs结果插入到全局静态队里all_bdrv_states中。1752~1758行，如果child_role非空的话则表示bdrv_open_inherit创建的是child类型的bs，因此设置该bs的inherits_from，同时设置修改flags的值，使得修改后flags & BDRV_O_PROTOCOL不等于0。1788~1796行根据drvname 查找获取到对应drv的引用，这里获取到drv只是用于做一些判断，并不会调用drv的回调函数。1806~1813行，判断flags & BDRV_O_PROTOCOL是否等于0 ，如果等于零的话说明是在创建父bs，然后需要通过调用bdrv_open_child创建父bs的结构成员file，bdrv_open_child创建一个BdrvChildRole结构，同时会通过再次调用bdrv_open_inherit来创建BdrvChildRole的成员bs。1846~1850行，调用bdrv_open_common函数，bdrv_open_common会进一步调用特定镜像对应的bdrv所注册的回调函数来执行跟特定进行镜像相关的初始化工作，比如针对file 类型，会打开响应的镜像文件并将fd保存到bs相关的机构成员中，1912~1933行，返回创建的bs。
+1720~1730行如果reference非空的话，表明相应的bs数据结构已经创建，需要通过查找来获取相关bs的引用，通过bdrv\_open函数调用进入bdrv\_open\_inherit时，该参数为空，因此不会进入if分支内部。1739行，reference为空的话那么通过调用bdrv\_new（）函数来创建一个bs结构，该函数只是分配变量的内存空间，成员参数全部初始化为0，并将该bs结果插入到全局静态队里all\_bdrv\_states中。1752~1758行，如果child\_role非空的话则表示bdrv\_open\_inherit创建的是child类型的bs，因此设置该bs的inherits\_from，同时设置修改flags的值，使得修改后flags & BDRV_O_PROTOCOL不等于0。1788~1796行根据drvname 查找获取到对应drv的引用，这里获取到drv只是用于做一些判断，并不会调用drv的回调函数。1806~1813行，判断flags & BDRV\_O\_PROTOCOL是否等于0 ，如果等于零的话说明是在创建父bs，然后需要通过调用bdrv\_open\_child创建父bs的结构成员file，bdrv\_open\_child创建一个BdrvChildRole结构，同时会通过再次调用bdrv\_open\_inherit来创建BdrvChildRole的成员bs。1846~1850行，调用bdrv\_open\_common函数，bdrv\_open\_common会进一步调用特定镜像对应的bdrv所注册的回调函数来执行跟特定进行镜像相关的初始化工作，比如针对file 类型，会打开响应的镜像文件并将fd保存到bs相关的机构成员中，1912~1933行，返回创建的bs。
 
 
 

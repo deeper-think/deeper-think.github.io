@@ -1,6 +1,6 @@
 ---
 layout: post
-title: qemu尾队列分析及应用
+title: qemu 核心机制之一：尾队列实现分析及应用
 category: KVM虚拟化
 tags: [KVM，qemu]
 keywords: KVM，qemu

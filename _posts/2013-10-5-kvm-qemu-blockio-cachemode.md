@@ -1,6 +1,6 @@
 ---
 layout: post
-title: qemu Block之二：cache、io模式分析
+title:  kvm block IO 之二：cache、io模式分析
 category: KVM虚拟化
 tags: [KVM，qemu]
 keywords: KVM，qemu
