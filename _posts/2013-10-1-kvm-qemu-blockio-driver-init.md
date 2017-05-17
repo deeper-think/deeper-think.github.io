@@ -1,6 +1,6 @@
 ---
 layout: post
-title: qemu 后端块设备IO实现分析：block drive初始化
+title: 01 Block IO分析：qemu后端 block drive初始化
 category: KVM虚拟化
 tags: [KVM，qemu]
 keywords: KVM，qemu
@@ -286,7 +286,7 @@ module\_call\_init的入参是一个枚举类型的常量，用于表示要初�
 
 > bs是在blk的创建过程中同时创建的，bs和blk都是通过专门的结构变量创建函数来创建，并且在创建后相关的结构变量被直接插入到相关的全局队列中，已被之后查找使用。
 
-bdrv_open_inherit函数的调用堆栈如下：
+进入bdrv_open_inherit函数的调用堆栈如下：
 
 	(gdb) bt
 	#0  bdrv_open_inherit (
@@ -315,7 +315,85 @@ bdrv_open_inherit函数的调用堆栈如下：
 	#7  0x00007f4817689356 in main (argc=51, argv=0x7ffee15a9b88,
     	envp=0x7ffee15a9d28) at vl.c:4484
 
-上面的调用堆栈进入bdrv_open_inherit()后，会通过间接递归再次调用bdrv_open_inherit()，因此
+下面详细分析bdrv_open_inherit（）函数的实现：
+
+	1700 static BlockDriverState *bdrv_open_inherit(const char *filename,
+	1701                                            const char *reference,
+	1702                                            QDict *options, int flags,
+	1703                                            BlockDriverState *parent,
+	1704                                            const BdrvChildRole *child_role,
+	1705                                            Error **errp)
+	1706 {
+	1707     int ret;
+	1708     BdrvChild *file = NULL;
+	1709     BlockDriverState *bs;
+	1710     BlockDriver *drv = NULL;
+	1711     const char *drvname;
+	1712     const char *backing;
+	1713     Error *local_err = NULL;
+	1714     QDict *snapshot_options = NULL;
+	1715     int snapshot_flags = 0;
+	......
+	1720     if (reference) {
+	1721         bool options_non_empty = options ? qdict_size(options) : false;
+	1722         QDECREF(options);
+	1723
+	1724         if (filename || options_non_empty) {
+	1725             error_setg(errp, "Cannot reference an existing block device with "
+	1726                        "additional options or a new filename");
+	1727             return NULL;
+	1728         }
+	1729
+	1730         bs = bdrv_lookup_bs(reference, reference, errp);
+	1731         if (!bs) {
+	1732             return NULL;
+	1733         }
+	1734
+	1735         bdrv_ref(bs);
+	1736         return bs;
+	1737     }
+	1738
+	1739     bs = bdrv_new();
+	......
+	1752     bs->explicit_options = qdict_clone_shallow(options);
+	1753
+	1754     if (child_role) {
+	1755         bs->inherits_from = parent;
+	1756         child_role->inherit_options(&flags, options,
+	1757                                     parent->open_flags, parent->options);
+	1758     }
+	......
+	1788     /* Find the right image format driver */
+	1789     drvname = qdict_get_try_str(options, "driver");
+	1790     if (drvname) {
+	1791         drv = bdrv_find_format(drvname);
+	1792         if (!drv) {
+	1793             error_setg(errp, "Unknown driver: '%s'", drvname);
+	1794             goto fail;
+	1795         }
+	1796     }
+	......
+	1806     /* Open image file without format layer */
+	1807     if ((flags & BDRV_O_PROTOCOL) == 0) {
+	1808         file = bdrv_open_child(filename, options, "file", bs,
+	1809                                &child_file, true, &local_err);
+	1810         if (local_err) {
+	1811             goto fail;
+	1812         }
+	1813     }
+	......	
+	1846     /* Open the image */
+	1847     ret = bdrv_open_common(bs, file, options, &local_err);
+	1848     if (ret < 0) {
+	1849         goto fail;
+	1850     }
+	......
+	1912     return bs;
+	1913
+	......
+	1933 }
+
+1720~1730行如果reference非空的话，表明相应的bs数据结构已经创建，需要通过查找来获取相关bs的引用，通过bdrv_open函数调用进入bdrv_open_inherit时，该参数为空，因此不会进入if分支内部。1739行，reference为空的话那么通过调用bdrv_new（）函数来创建一个bs结构，该函数只是分配变量的内存空间，成员参数全部初始化为0，并将该bs结果插入到全局静态队里all_bdrv_states中。1752~1758行，如果child_role非空的话则表示bdrv_open_inherit创建的是child类型的bs，因此设置该bs的inherits_from，同时设置修改flags的值，使得修改后flags & BDRV_O_PROTOCOL不等于0。1788~1796行根据drvname 查找获取到对应drv的引用，这里获取到drv只是用于做一些判断，并不会调用drv的回调函数。1806~1813行，判断flags & BDRV_O_PROTOCOL是否等于0 ，如果等于零的话说明是在创建父bs，然后需要通过调用bdrv_open_child创建父bs的结构成员file，bdrv_open_child创建一个BdrvChildRole结构，同时会通过再次调用bdrv_open_inherit来创建BdrvChildRole的成员bs。1846~1850行，调用bdrv_open_common函数，bdrv_open_common会进一步调用特定镜像对应的bdrv所注册的回调函数来执行跟特定进行镜像相关的初始化工作，比如针对file 类型，会打开响应的镜像文件并将fd保存到bs相关的机构成员中，1912~1933行，返回创建的bs。
 
 
 
