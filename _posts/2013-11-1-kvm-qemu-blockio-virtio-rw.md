@@ -115,10 +115,40 @@ raw\_co\_prw函数的详细实现如下：
 	1276     return paio_submit_co(bs, s->fd, offset, qiov, bytes, type);
 	1277 }
 
-在raw\_co\_prw函数内，将根据虚拟机的配置以及系统是否支撑linux\_aio来决定最后的读写方式是通过linux 异步aio还是通过线程池的方式，如果是异步aio的话，进入laio\_co\_submit，如果是线程池的话 进入paio\_submit\_co，这两个函数都只是提交io，都不会因为等待io的完成而阻塞。
+在raw\_co\_prw函数内，将根据虚拟机的配置以及系统是否支撑linux\_aio来决定最后的读写方式是通过linux 异步aio还是通过线程池的方式，如果是异步aio的话，进入laio\_co\_submit，如果是线程池的话 进入paio\_submit\_co，不论是那种方式都不会因为等待io的完成而阻塞，我这里的环境和创建虚拟机的配置使用的是linux\_aio的方式，因此这里重点分析laio\_co\_submit的实现，具体实现如下：
 
-在协程中完成IO提交之后，函数调用会再次回到blk\_aio\_prwv, 在blk\_aio\_prwv函数注册
-io完成后的通知信号以及处理函数blk\_aio\_complete\_bh。
+	392 int coroutine_fn laio_co_submit(BlockDriverState *bs, LinuxAioState *s, int fd,
+	393                                 uint64_t offset, QEMUIOVector *qiov, int type)
+	394 {
+	395     int ret;
+	396     struct qemu_laiocb laiocb = {
+	397         .co         = qemu_coroutine_self(),
+	398         .nbytes     = qiov->size,
+	399         .ctx        = s,
+	400         .ret        = -EINPROGRESS,
+	401         .is_read    = (type == QEMU_AIO_READ),
+	402         .qiov       = qiov,
+	403     };
+	404 
+	405     ret = laio_do_submit(fd, &laiocb, offset, type);
+	406     if (ret < 0) {
+	407         return ret;
+	408     }
+	409 
+	410     if (laiocb.ret == -EINPROGRESS) {
+	411         qemu_coroutine_yield();
+	412     }
+	413     return laiocb.ret;
+	414 }
+
+396~405行创建laiocb结构变量并将QEMUIOVector qiov封装到该结构变量中，然后调用laio\_do\_submit来提交IO，laio\_do\_submit函数的返回并不一定该IO已经完成，有可能只是将laiocb插入到LinuxAioState结构变量的io\_q.pending队列里面；410~412行，如果IO还没有完成，则先退出协程，也即退回到blk\_aio\_prwv函数的1011行。从上面的过程可以看出，
+
+> qemu每次提交IO都会创建一个协程，协程内完成IO的提交，但是协程内并不会阻塞来等待IO的完成，如果IO没有完成，处于EINPROGRESS状态，该协程会先从本协程内退出，等该IO完成后会再次进入该协程。
+
+
+
+
+
 
 IO后半部：
 
