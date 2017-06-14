@@ -1,6 +1,6 @@
 ---
 layout: post
-title: kvm block IO 之一：qemu virito 读写流程分析
+title: kvm block IO 03：qemu virtio 读写流程分析
 category: KVM虚拟化
 tags: [KVM，qemu]
 keywords: KVM，qemu
@@ -9,6 +9,13 @@ description:
 
 > 用正确的工具，做正确的事情
 
+## 总体读写流程概括
+
+总体的读写流程概括，
+
+> virtIO 读写过程主要分为前半部和后半部，前半部主要是提交并完成IO请求，后半部主要包括vring数据结构的更新以及一些notify的工作。前半部针对每一个IO请求创建一个协程，在协程内部提交IO，但进程并不会阻塞并等待IO的完成，如果IO没有完成则进程会暂时退出当前协程并继续后续的处理工作，直到IO完成会再次进入本次IO的协程，进而之前被调用的函数依次返回，表示本次IO的完成。前半部单纯完成IO的读写，IO读写完成后其他需要做的工作包括ving数据结构的更新以及notify的工作，都是在后半部完成。
+
+## virtIO 读写流程前半部
 
 进入协程之前：
 
@@ -148,9 +155,9 @@ raw\_co\_prw函数的详细实现如下：
 
 
 
+## virtio 读写流程后半部
 
 
-IO后半部：
 
 	
 
