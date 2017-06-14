@@ -1,6 +1,6 @@
 ---
 layout: post
-title: kvm block IO 之一：qemu block drive初始化过程分析
+title: kvm-qemu virtio分析：qemu block drive初始化过程分析
 category: KVM虚拟化
 tags: [KVM，qemu]
 keywords: KVM，qemu
