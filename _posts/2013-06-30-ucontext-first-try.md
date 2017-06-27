@@ -11,7 +11,7 @@ description:
 
 最近在读qemu virtio-blk的代码实现时发现qemu基于ucontext封装了自己的协程库，并在virtio-blk的代码流程中使用了该库来避免阻塞以及线程内"并发"。协程这个东西在很多语言中比如python提供了语言级的支持，之前或多或少有些了解，但是并不是很熟悉去原理及内部的实现机制，但既然都是基于类似于ucontext族等的底层技术来实现，那么有必要好好研究研究ucontext 族相关的数据结构以及函数功能及其实现。
 
-## ucontext族重要数据结构
+## 重要数据结构
 
 ucontext族最终的数据结构 struct ucontext，该结构体包括的成员变量在不同的平台架构会有所不同，但是都会包括下面几个关键成员：
 
@@ -25,7 +25,7 @@ ucontext族最终的数据结构 struct ucontext，该结构体包括的成员�
 	} ucontext_t;
 
 
-## ucontext族关键函数的功能及实现
+## 主要函数的功能及实现
 
 	int   getcontext(ucontext_t *ucp);
 
