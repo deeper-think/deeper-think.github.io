@@ -1,6 +1,6 @@
 ---
 layout: post
-title: kvm-qemu virtio分析：qemu virtio 读写流程分析
+title: qemu virtio 读写流程分析
 category: KVM虚拟化
 tags: [KVM，qemu]
 keywords: KVM，qemu
