@@ -1,6 +1,6 @@
 ---
 layout: post
-title: gcc __thread关键字使用
+title: __thread关键字与Thread-local storage
 category: 编程调试技巧
 tags: [编程技巧]
 keywords: 编程技巧
