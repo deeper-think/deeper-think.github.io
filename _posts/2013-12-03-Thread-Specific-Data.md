@@ -1,6 +1,6 @@
 ---
 layout: post
-title: NPTL线程私有数据（Thread-Specific-Data）
+title: 线程私有数据（Thread-Specific-Data）
 category: 编程调试技巧
 tags: [编程技巧]
 keywords: 编程技巧
