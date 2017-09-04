@@ -292,7 +292,7 @@ CoQueue与CoMutex/CoRwlock是与Coroutine锁相关的数据结构, 提供两种�
 
 上面是对qemu\_coroutine\_create（）函数的分析，其中有两个疑问：
 
-1. 52~57行，看起来像是一种异步通知的机制,具体实现有待进一步分析；
+1. 52~57行，注册线程退出时的协程资源的清理函数coroutine\_pool\_cleanup()，该函数释放alloc\_pool里面的所有对象，但是为什么没有释放release_pool呢？
 2. 这里Coroutine为了实现"池"的概念，创建了两个资源池alloc_pool以及release_pool，为什么创建两个pool，目的何在？难道是为了实现无锁队列。
 
 #### 删除协程coroutine\_delete()
@@ -372,6 +372,10 @@ CoQueue与CoMutex/CoRwlock是与Coroutine锁相关的数据结构, 提供两种�
 
 该函数的实现逻辑比较简单，函数的声明使用了coroutine_fn标记，表明该函数只能在Coroutine上下文内被调用执行。
 
+
+
+
+
 ### Coroutine锁相关的操作函数
 
 Coroutine实现了"互斥"锁和"读写"锁, 互斥锁的lock_init、lock以及unlock的逻辑比较简单，下面只对“读写”锁的实现进行简单分析，互斥锁的实现类似。
@@ -440,6 +444,9 @@ lock指向的CoRwlock结构对象内存置0，CoQueue成员变量初始化。
 这里"读"锁和"写"锁的unlock没有在函数上区分，而是在一个函数里面实现的，主要是因为根据当前锁的状态以及"读写"锁的特性可以推断出要unlock的是"读"锁还是"写"锁，另外186行是qemu\_co\_queue\_next而不是qemu\_co\_queue\_restart\_all,因为这里要唤醒的是因为请求“写”锁的Coroutine，而“写”锁只能被一个Coroutine持有。
 
 最后总结一些qemu协程的实现首先是在UContext函数簇以及setjmp/longjmp的基础上实现了简单的协程创建、进入以及删除的功能，然后在此基础上实现了高级协程的功能包括Coroutine资源池以及Coroutine锁，其他功能模块直接调用高级协程功能函数来使用协程。
+
+
+
 
 
 玩的开心 !!!
