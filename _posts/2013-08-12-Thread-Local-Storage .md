@@ -1,6 +1,6 @@
 ---
 layout: post
-title: __thread关键字与Thread-local storage
+title: 线程局部存储(Thread-local storage)
 category: 编程调试技巧
 tags: [编程技巧]
 keywords: 编程技巧
