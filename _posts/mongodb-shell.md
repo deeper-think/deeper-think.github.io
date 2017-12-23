@@ -1,7 +1,7 @@
 ## mongodb shell
 ### 连接数据库
 
-	for i in {17089..17095};do mongo 127.0.0.1:$i/admin -u WCSUserAdmin -p VXIHF6I1XQr4 --eval "rs.status()" |egrep 'name|stateStr';done
+	for i in {17088..17095};do mongo 127.0.0.1:$i/admin -u WCSUserAdmin -p VXIHF6I1XQr4 --eval "rs.status()" |egrep 'name|stateStr';echo "------------------";done
 
 	mongo 127.0.0.1:17095/admin -u WCSUserAdmin -p VXIHF6I1XQr4
 
