@@ -56,7 +56,9 @@ mongostat 数据采集：
 	/usr/bin/mongostat 60 --host=127.0.0.1 --port=17088 -u UserAdmin -p passwd --authenticationDatabase admin --discover
 
 
+mongodb创建用户：
 
+	db.createUser({"user": "userAdmin","pwd": "userAdmin","customData": { "user": "userAdmin","pwd": "userAdmin" },"roles": [ { role: "userAdminAnyDatabase", db: "admin" },{ role: "userAdmin", db: "admin" }] })
 
 
 玩的开心 !!!
