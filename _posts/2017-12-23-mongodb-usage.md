@@ -49,16 +49,63 @@ description:
 mongodb账号权限管理：
 
 	db.grantRolesToUser( "WCSUserAdmin" , [ { role: "root", db: "admin" } ])
-	
-
-mongostat 数据采集：
-
-	/usr/bin/mongostat 60 --host=127.0.0.1 --port=17088 -u UserAdmin -p passwd --authenticationDatabase admin --discover
-
 
 mongodb创建用户：
 
 	db.createUser({"user": "userAdmin","pwd": "userAdmin","customData": { "user": "userAdmin","pwd": "userAdmin" },"roles": [ { role: "userAdminAnyDatabase", db: "admin" },{ role: "userAdmin", db: "admin" }] })
+
+
+## mongodb权限认证
+
+与mongodb权限认证有关的三个常用配置项：
+
+	security.authorization
+	security.keyFile
+	setParameter.enableLocalhostAuthBypass
+
+### security.authorization配置项
+
+security.authorization 默认值disabled。 默认情况下，mongodb没有操作权限验证，在这种情况下采用如下匿名的方式连接登录mongodb后也可以做任何的操作，包括：创建用户，创建数据库等：
+
+	[root@localhost home]# mongo 127.0.0.1:17088/admin
+	MongoDB shell version v3.4.12
+	connecting to: mongodb://127.0.0.1:17088/admin
+	MongoDB server version: 3.4.12
+	Server has startup warnings: 
+	2018-05-23T22:43:44.603+0800 I CONTROL  [initandlisten] 
+	2018-05-23T22:43:44.603+0800 I CONTROL  [initandlisten] ** WARNING: Access control is not enabled for the database.
+	2018-05-23T22:43:44.603+0800 I CONTROL  [initandlisten] **          Read and write access to data and configuration is unrestricted.
+	2018-05-23T22:43:44.603+0800 I CONTROL  [initandlisten] 
+	2018-05-23T22:43:44.603+0800 I CONTROL  [initandlisten] 
+	2018-05-23T22:43:44.603+0800 I CONTROL  [initandlisten] ** WARNING: soft rlimits too low. rlimits set to 1024 processes, 64000 files. Number of processes should be at least 32000 : 0.5 times number of files.
+	> show dbs
+	admin     0.000GB
+	fileinfo  0.000GB
+	local     0.000GB
+
+
+security.authorization 设置为true，开启权限验证。
+
+### security.keyFile配置项
+
+设置security.keyFile的同时也就将security.authorization 设置为true，也即开启权限验证。 security.keyFile用于mongos与mongod以及mongod cs和shard之间的同步和通信。
+
+### setParameter.enableLocalhostAuthBypass配置项
+
+在3.4版本验证，没有发现该配置项有什么作用。
+
+
+## mongostat 数据采集
+
+mongostat采集当前mongodb的状态数据：
+
+	/usr/bin/mongostat 60 --host=127.0.0.1 --port=17088 -u WCSMongoStatUser -p passwd --authenticationDatabase admin --discover
+
+创建用于mongostat数据采集的账号：
+
+	db.createUser({"user": "WCSMongoStatUser","pwd": "passwd","customData": { "user": "WCSMongoStatUser","pwd": "passwd" },"roles": [ { role: "clusterMonitor", db: "admin" }] })
+
+
 
 
 玩的开心 !!!
