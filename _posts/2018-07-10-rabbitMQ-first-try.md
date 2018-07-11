@@ -215,7 +215,22 @@ yum安装rabbitmq-server并启动rabbit-server：
 
 
 关于RabbitMQ高可用性的问题涉及到更多细节的东西，比如RabbitMQ镜像集群等，高可用和高可靠性是生产环境部署必须要考虑的事情，这里暂时略过。
+
+
+### RabbitMQ管理界面
+
+启用管理插件：
+
+	rabbitmq-plugins enable rabbitmq_management
+
+通过浏览器访问web管理界面，默认登陆账号和密码为guest/guest：
+
+	http://IP:15672/
+
+web管理界面如下：
+
+![AMQP协议架构](http://7u2rbh.com1.z0.glb.clouddn.com/rabbitMQ-web.png)
+
 	
-
-
+	
 玩得开心！！！
